@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CA7B294F1DFACD61006783DC /* ChecklistItem.m in Sources */ = {isa = PBXBuildFile; fileRef = CA7B294E1DFACD61006783DC /* ChecklistItem.m */; };
+		CA7B29521DFAE799006783DC /* ItemDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CA7B29511DFAE799006783DC /* ItemDetailViewController.m */; };
 		CADFCF311DED4A1B006C806C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CADFCF301DED4A1B006C806C /* main.m */; };
 		CADFCF341DED4A1B006C806C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CADFCF331DED4A1B006C806C /* AppDelegate.m */; };
 		CADFCF371DED4A1B006C806C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CADFCF361DED4A1B006C806C /* ViewController.m */; };
@@ -35,6 +37,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		CA7B294D1DFACD61006783DC /* ChecklistItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChecklistItem.h; sourceTree = "<group>"; };
+		CA7B294E1DFACD61006783DC /* ChecklistItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChecklistItem.m; sourceTree = "<group>"; };
+		CA7B29501DFAE799006783DC /* ItemDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ItemDetailViewController.h; sourceTree = "<group>"; };
+		CA7B29511DFAE799006783DC /* ItemDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ItemDetailViewController.m; sourceTree = "<group>"; };
 		CADFCF2C1DED4A1B006C806C /* Checklists.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Checklists.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CADFCF301DED4A1B006C806C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		CADFCF321DED4A1B006C806C /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -110,6 +116,10 @@
 				CADFCF3D1DED4A1B006C806C /* LaunchScreen.storyboard */,
 				CADFCF401DED4A1B006C806C /* Info.plist */,
 				CADFCF2F1DED4A1B006C806C /* Supporting Files */,
+				CA7B294D1DFACD61006783DC /* ChecklistItem.h */,
+				CA7B294E1DFACD61006783DC /* ChecklistItem.m */,
+				CA7B29501DFAE799006783DC /* ItemDetailViewController.h */,
+				CA7B29511DFAE799006783DC /* ItemDetailViewController.m */,
 			);
 			path = Checklists;
 			sourceTree = "<group>";
@@ -276,6 +286,8 @@
 				CADFCF371DED4A1B006C806C /* ViewController.m in Sources */,
 				CADFCF341DED4A1B006C806C /* AppDelegate.m in Sources */,
 				CADFCF311DED4A1B006C806C /* main.m in Sources */,
+				CA7B29521DFAE799006783DC /* ItemDetailViewController.m in Sources */,
+				CA7B294F1DFACD61006783DC /* ChecklistItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -370,7 +382,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -411,7 +423,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -423,9 +435,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = Checklists/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "BUPT-Nuts.Checklists";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -434,9 +448,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = Checklists/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "BUPT-Nuts.Checklists";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -505,6 +521,7 @@
 				CADFCF5B1DED4A1B006C806C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		CADFCF5C1DED4A1B006C806C /* Build configuration list for PBXNativeTarget "ChecklistsTests" */ = {
 			isa = XCConfigurationList;
@@ -513,6 +530,7 @@
 				CADFCF5E1DED4A1B006C806C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		CADFCF5F1DED4A1B006C806C /* Build configuration list for PBXNativeTarget "ChecklistsUITests" */ = {
 			isa = XCConfigurationList;
@@ -521,6 +539,7 @@
 				CADFCF611DED4A1B006C806C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
