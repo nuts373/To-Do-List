@@ -33,12 +33,7 @@
         _dueDate = [NSDate date];
     }
     [self updateDueDateLabel];
-    
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+   // [self showDatePicker];
 }
 - (void)updateDueDateLabel
 {
@@ -46,26 +41,36 @@
     [formatter setDateStyle:NSDateFormatterMediumStyle];
     [formatter setTimeStyle:NSDateFormatterShortStyle];
     self.dueDateLabel.text = [formatter stringFromDate:_dueDate];
-    NSLog(@"kkkkk");
 }
 - (void)showDatePicker
 {
     _datePickerVisible  = YES;
     
+    NSIndexPath *indexPathDateRow = [NSIndexPath indexPathForRow:1 inSection:1];
     NSIndexPath *indexPathDatePicker = [NSIndexPath indexPathForRow:2 inSection:1];
+    
+    
+    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPathDateRow];
+    cell.detailTextLabel.textColor = cell.detailTextLabel.tintColor;
+    
+    [self.tableView beginUpdates];
     [self.tableView insertRowsAtIndexPaths:@[indexPathDatePicker] withRowAnimation:UITableViewRowAnimationFade];
+    [self.tableView reloadRowsAtIndexPaths:@[indexPathDateRow] withRowAnimation:UITableViewRowAnimationNone];
+    [self.tableView endUpdates];
+    
+    UITableViewCell *datePickerCell = [self.tableView cellForRowAtIndexPath:indexPathDatePicker];
+    UIDatePicker *datePicker = (UIDatePicker *)[datePickerCell viewWithTag:100];
+    [datePicker setDate:_dueDate animated:NO];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     
-   // [self.textField becomeFirstResponder];
-    NSLog(@"test");
+    [self.textField becomeFirstResponder];
 }
 
 - (BOOL)textField:(UITextField *)theTextField
@@ -97,7 +102,9 @@
         }
         return cell;
     }else {
+        NSLog(@"section: %ld , row: %ld loaded!",indexPath.section, indexPath.row);
         return [super tableView:tableView cellForRowAtIndexPath:indexPath];
+       
     }
 }
 
@@ -121,10 +128,10 @@
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 1 && indexPath.row == 1) {
-        NSLog(@"%ld", indexPath.row);
+        NSLog(@"will select row at section:%ld, row:%ld" , indexPath.section, indexPath.row);
         return indexPath;
     } else {
-        NSLog(@"%ld", indexPath.row);
+        NSLog(@"will select row at section:%ld, row:%ld" , indexPath.section, indexPath.row);
         return nil;
     }
 
@@ -132,28 +139,59 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-    //[tableView deselectRowAtIndexPath:indexPath animated:YES];
     [self.textField resignFirstResponder];
     
     if (indexPath.section == 1 && indexPath.row == 1){
-        [self showDatePicker];
+        
+        if (!_datePickerVisible){
+            [self showDatePicker];
+        } else {
+            [self hideDatePicker];
+        }
     }
+  //  [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
-//- (NSInteger)tableView:(UITableView *)tableView indentationLevelForRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    if (indexPath.section == 1 && indexPath.row == 2){
-//        
-//        NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:0 inSection:indexPath.section];
-//        
-//        return [super tableView:tableView indentationLevelForRowAtIndexPath:newIndexPath];
-//    } else {
-//        return [super tableView:tableView indentationLevelForRowAtIndexPath:indexPath];
-//    }
-//}
+- (NSInteger)tableView:(UITableView *)tableView indentationLevelForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.section == 1 && indexPath.row == 2){
+        
+        NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:0 inSection:indexPath.section];
+        
+        return [super tableView:tableView indentationLevelForRowAtIndexPath:newIndexPath];
+    } else {
+        return [super tableView:tableView indentationLevelForRowAtIndexPath:indexPath];
+    }
+}
 #pragma mark - Table view data source
-
+- (void)hideDatePicker
+{
+    if (_datePickerVisible){
+        _datePickerVisible = NO;
+        
+        NSIndexPath *indexPathDateRow = [NSIndexPath indexPathForRow:1 inSection:1];
+        NSIndexPath *indexPathDatePicker = [NSIndexPath indexPathForRow:2 inSection:1];
+        
+        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPathDateRow];
+        cell.detailTextLabel.textColor = [UIColor colorWithWhite:0.0f alpha:0.5f];
+        
+        [self.tableView beginUpdates];
+        [self.tableView reloadRowsAtIndexPaths:@[indexPathDateRow] withRowAnimation:UITableViewRowAnimationNone];
+        [self.tableView deleteRowsAtIndexPaths:@[indexPathDatePicker] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView endUpdates];
+    }
+}
+- (void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    [self hideDatePicker];
+}
+- (void)dateChanged:(UIDatePicker *)datePicker
+{
+    _dueDate = datePicker.date;
+    [self updateDueDateLabel];
+}
 
 - (IBAction)cancel;
 {
