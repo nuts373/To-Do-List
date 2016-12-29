@@ -7,12 +7,20 @@
 //
 
 #import "AllListsViewController.h"
-
+#import "Checklist.h"
+#import "ChecklistItem.h"
+#import "DataModel.h"
+#import "ChecklistViewController.h"
 @interface AllListsViewController ()
 
 @end
 
 @implementation AllListsViewController
+{
+    
+}
+
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -23,84 +31,132 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
-
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    self.navigationController.delegate = self;
+    NSInteger index = [self.dataModel indexOfSelectedChecklist];
+    if (index >= 0 && index < [self.dataModel.lists count]){
+        Checklist *checklist = self.dataModel.lists[index];
+        
+        [self performSegueWithIdentifier:@"ShowChecklist" sender:checklist];
+    }
+    
+}
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    [self.tableView reloadData];
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
 #pragma mark - Table view data source
-/*
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-#warning Incomplete implementation, return the number of sections
-    return 0;
-}*/
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+- (NSInteger)tableView:(UITableView *)tableView
+        numberOfRowsInSection:(NSInteger)section {
 
-    return 3;
+    return [self.dataModel.lists count];
 }
-
-/*
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
-    
-    // Configure the cell...
-    
-    return cell;
-}
-*/
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-
-// Override to support editing the table view.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *CellIdentifier = @"Cell";
     
     UITableViewCell *cell =[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil){
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
     
-    cell.textLabel.text = [NSString stringWithFormat:@"List %ld",indexPath.row];
+    Checklist *checklist = self.dataModel.lists[indexPath.row];
+    cell.textLabel.text = checklist.name;
+    cell.accessoryType = UITableViewCellAccessoryDetailButton;
+    
+    int count = [checklist countUncheckedItems];
+    if ([checklist.items count] == 0){
+        cell.detailTextLabel.text = @"(No Items)";
+    } else if (count == 0){
+        cell.detailTextLabel.text = @"All Done!";
+    } else {
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"%d Remaining", count];
+    }
+    cell.imageView.image = [UIImage imageNamed:checklist.iconName];
     
     return cell;
 }
 - (void)tableView:(UITableView *)tableView
         didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self performSegueWithIdentifier:@"ShowChecklist" sender:nil];
+    [self.dataModel setIndexOfSelectedChecklist:indexPath.row];
+    
+    Checklist *checklist = self.dataModel.lists[indexPath.row];
+    
+    [self performSegueWithIdentifier:@"ShowChecklist" sender:checklist];
+}
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"ShowChecklist"]){
+        ChecklistViewController *controller = segue.destinationViewController;
+        controller.checklist = sender;
+    }
+    else if ([segue.identifier isEqualToString:@"AddChecklist"]){
+        UINavigationController *navigationController = segue.destinationViewController;
+        
+        ListDetailViewController *controller =
+        (ListDetailViewController *)
+        navigationController.topViewController;
+        
+        controller.delegate = self;
+        controller.checklistToEdit = nil;
+    }
+}
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(nonnull NSIndexPath *)indexPath
+{
+    [self.dataModel.lists removeObjectAtIndex:indexPath.row];
+    
+    NSArray *indexPaths = @[indexPath];
+    [tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
+- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(nonnull NSIndexPath *)indexPath
+{
+    UINavigationController *navigationController = [self.storyboard instantiateViewControllerWithIdentifier:@"ListNavigationController"];
+    ListDetailViewController *controller = (ListDetailViewController *)navigationController.topViewController;
+    controller.delegate = self;
+    
+    Checklist *checklist = self.dataModel.lists[indexPath.row];
+    controller.checklistToEdit = checklist;
+    
+    [self presentViewController:navigationController animated:YES completion:nil];
 }
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
+#pragma mark - ListDetail Delegate
+- (void)listdetailViewControllerDidCancel:(ListDetailViewController *)controller
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
-*/
 
-/*
-#pragma mark - Navigation
+- (void)listdetailViewController:(ListDetailViewController *)controller didFinishAddingChecklist:(Checklist *)checklist
+{
+    [self.dataModel.lists addObject:checklist];
+    
+    [self.dataModel sortChecklists];
+    [self.tableView reloadData];
+    [self dismissViewControllerAnimated:YES completion:nil];
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
 }
-*/
+- (void)listDetailViewController:(ListDetailViewController *)controller didFinishEditingChecklist:(Checklist *)checklist
+{
+    [self.dataModel sortChecklists];
+    
+    [self.tableView reloadData];
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
+{
+    if (viewController == self){
+        [self.dataModel setIndexOfSelectedChecklist:-1];
+    }
+}
 
 @end
