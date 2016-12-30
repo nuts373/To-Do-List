@@ -33,7 +33,6 @@
         _dueDate = [NSDate date];
     }
     [self updateDueDateLabel];
-   // [self showDatePicker];
 }
 - (void)updateDueDateLabel
 {
@@ -102,7 +101,6 @@
         }
         return cell;
     }else {
-        NSLog(@"section: %ld , row: %ld loaded!",indexPath.section, indexPath.row);
         return [super tableView:tableView cellForRowAtIndexPath:indexPath];
        
     }
@@ -128,10 +126,8 @@
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 1 && indexPath.row == 1) {
-        NSLog(@"will select row at section:%ld, row:%ld" , indexPath.section, indexPath.row);
         return indexPath;
     } else {
-        NSLog(@"will select row at section:%ld, row:%ld" , indexPath.section, indexPath.row);
         return nil;
     }
 
@@ -205,12 +201,17 @@
         item.checked = NO;
         item.shouldRemind = self.switchControl.on;
         item.dueDate = _dueDate;
+        
+        [item scheduleNotification];
     
         [self.delegate addItemViewController:self didFinishAddingItem:item];
     }else{
         self.itemToEdit.text = self.textField.text;
         self.itemToEdit.shouldRemind = self.switchControl.on;
         self.itemToEdit.dueDate = _dueDate;
+        
+        [self.itemToEdit scheduleNotification];
+        
         [self.delegate addItemViewController:self didFinishEditingItem:self.itemToEdit];
     }
 }

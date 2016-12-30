@@ -87,7 +87,7 @@
     }
     return self;
 }
-+ (int)nextChecklistItemId
++ (NSInteger)nextChecklistItemId
 {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     NSInteger itemId = [userDefaults integerForKey:@"ChecklistItemId"];

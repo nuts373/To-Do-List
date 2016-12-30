@@ -51,7 +51,7 @@
            withChecklistItem:(ChecklistItem *)item
 {
     UILabel *label = (UILabel *)[cell viewWithTag:1000];
-    label.text = [NSString stringWithFormat:@"%ld: %@", item.itemId, item.text];
+    label.text = [NSString stringWithFormat:@"%@", item.text];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView

@@ -37,8 +37,6 @@
 //    localNotification.timeZone = [NSTimeZone defaultTimeZone];
 //    localNotification.alertBody = @"I am a local notification!";
 //    localNotification.soundName = UILocalNotificationDefaultSoundName;
-//    UIUserNotificationSettings *local = [UIUserNotificationSettings settingsForTypes:1 << 2 categories:nil];
-//    [[UIApplication sharedApplication] registerUserNotificationSettings:local];
 //    [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
     return YES;
 }
